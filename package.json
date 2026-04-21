@@ -11,6 +11,11 @@
     "preview": "astro preview",
     "astro": "astro"
   },
+  "overrides": {
+    "@keystatic/astro": {
+      "astro": "$astro"
+    }
+  },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.3",
     "@astrojs/node": "^10.0.5",
