@@ -11,6 +11,7 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
+  base: '/portfolio',
   integrations: [react(), markdoc(), keystatic()],
   output: 'static',
   root: '',
