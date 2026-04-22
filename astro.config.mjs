@@ -11,7 +11,6 @@ export default defineConfig({
   adapter: node({
     mode: 'standalone',
   }),
-  base: '/portfolio',
   integrations: [react(), markdoc(), keystatic()],
   root: '',
   site: 'https://felipeuliana.github.io',
