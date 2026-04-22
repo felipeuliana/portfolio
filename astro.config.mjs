@@ -12,6 +12,7 @@ export default defineConfig({
     mode: 'standalone',
   }),
   integrations: [react(), markdoc(), keystatic()],
+  output: 'static',
   root: '',
   site: 'https://felipeuliana.github.io',
 });
