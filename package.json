@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.3",
-    "@astrojs/node": "^10.0.5",
+    "@astrojs/netlify": "^7.0.8",
     "@astrojs/react": "^5.0.3",
     "@keystatic/astro": "^5.0.6",
     "@keystatic/core": "^0.5.50",
