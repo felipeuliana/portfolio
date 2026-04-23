@@ -19,5 +19,17 @@ export default config({
         }),
       },
     }),
+    site: singleton({
+      label: 'Site',
+      path: 'src/content/site/',
+      schema: {
+        description: fields.text({
+          label: 'Site description',
+        }),
+        title: fields.text({
+          label: 'Site title',
+        }),
+      },
+    }),
   },
 });

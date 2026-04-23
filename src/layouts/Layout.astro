@@ -1,23 +1,28 @@
+---
+import { createReader } from '@keystatic/core/reader';
+import keystaticConfig from '../../keystatic.config.ts';
+import '../styles/layout.css';
+
+const root = import.meta.env.OLDPWD ?? '';
+const reader = createReader(root, keystaticConfig);
+const site = await reader.singletons.site.read();
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+    <meta charset="UTF-8">
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+    <meta name="description" content={site?.description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+		<title>{site?.title}</title>
 	</head>
+
 	<body>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
