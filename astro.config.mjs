@@ -9,7 +9,11 @@ import netlify from '@astrojs/netlify';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), markdoc(), keystatic()],
-  root: '',
   adapter: netlify(),
+  integrations: [
+    react(),
+    markdoc(),
+    ...(process.env.SKIP_KEYSTATIC ? [] : [keystatic()]),
+  ],
+  root: '',
 });
