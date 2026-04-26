@@ -97,9 +97,9 @@ export default config({
         }),
       },
     }),
-    site: singleton({
-      label: 'Site',
-      path: 'src/content/site/',
+    settings: singleton({
+      label: 'Settings',
+      path: 'src/content/settings/',
       schema: {
         description: fields.text({
           label: 'Site description',
