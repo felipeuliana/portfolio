@@ -1,9 +1,10 @@
 import { config, fields, singleton } from '@keystatic/core';
+import { STORAGE_CONFIGS, STORAGE_KINDS } from './src/utils/constants';
+
+const KIND = import.meta.env.DEV ? STORAGE_KINDS.LOCAL : STORAGE_KINDS.GITHUB;
 
 export default config({
-  storage: {
-    kind: 'local',
-  },
+  storage: STORAGE_CONFIGS[KIND],
   collections: {
     articles: {
       label: 'Articles',
