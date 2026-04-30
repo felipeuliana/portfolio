@@ -43,12 +43,23 @@ const PROJECT_CASE_STUDY_COMPONENTS = {
 export default config({
   storage: STORAGE_CONFIGS[KIND],
   collections: {
-    articles: {
+    articles: collection({
       label: 'Articles',
+      path: 'src/content/articles/*',
+      entryLayout: 'content',
+      format: {
+        contentField: 'content',
+      },
+      columns: ['title', 'isDraft', 'pubDate'],
       slugField: 'title',
       schema: {
         description: fields.text({
           label: 'Article description',
+          description: 'Meta description for previews and SEO. Keep it under 160 characters.',
+          validation: {
+            length: { max: 160 },
+            isRequired: true,
+          },
         }),
         isDraft: fields.checkbox({
           label: 'Is draft?',
@@ -58,19 +69,51 @@ export default config({
           label: 'Publication date',
         }),
         tags: fields.array(fields.text({
-          label: 'Tags',
+          label: 'Tag',
           defaultValue: 'General',
-        })),
-        title: fields.text({
-          label: 'Article title',
+          validation: { isRequired: true },
+        }), {
+          label: 'Tags',
+          description: 'Add short topic labels for filtering and discovery.',
+          itemLabel: (props) => props.value,
+          validation: {
+            length: { min: 1 },
+          },
+        }),
+        title: fields.slug({
+          name: {
+            label: 'Article title',
+            validation: { isRequired: true },
+          },
+          slug: {
+            label: 'Article slug',
+            description: 'Generated from the title when the article is created. Avoid changing it after publishing.',
+            validation: {
+              pattern: {
+                regex: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                message: 'Use lowercase letters, numbers, and hyphens only.',
+              },
+            },
+          },
         }),
         relatedProject: fields.text({
           label: 'Related project slug',
           description: 'Allows you to link a project directly to an article',
           validation: { isRequired: false },
         }),
+        content: fields.markdoc({
+          label: 'Article content',
+          description: 'Write the article body with Markdoc.',
+          extension: 'mdoc',
+          options: {
+            image: {
+              directory: 'src/assets/articles',
+              publicPath: '../../assets/articles/',
+            },
+          },
+        }),
       },
-    },
+    }),
     projects: collection({
       label: 'Projects',
       path: 'src/content/projects/*',

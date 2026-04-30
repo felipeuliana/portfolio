@@ -5,7 +5,7 @@ import { z } from 'astro/zod';
 const articles = defineCollection({
   type: 'content',
   schema: z.object({
-    description: z.string(),
+    description: z.string().max(160),
     isDraft: z.boolean().default(true),
     pubDate: z.date(),
     tags: z.array(z.string()).default(['General']),
