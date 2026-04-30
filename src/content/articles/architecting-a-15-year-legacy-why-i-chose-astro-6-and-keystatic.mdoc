@@ -1,0 +1,131 @@
+---
+description: >-
+  How an Astro 6 upgrade exposed a Keystatic peer dependency gap and why a
+  scoped npm override kept the portfolio fast, secure, and maintainable.
+isDraft: false
+pubDate: 2026-04-24
+tags:
+  - Architecture
+  - Astro
+  - DX
+  - Keystatic
+  - Problem Solving
+title: 'Architecting a 15-Year Legacy: Why I chose Astro 6 and Keystatic'
+---
+
+# Architecting a 15-Year Legacy: Why I chose Astro 6 and Keystatic
+
+A portfolio is not only a gallery of finished work. For a senior engineer, it is also a small production system with real architectural constraints: dependency lifecycle, publishing workflow, content governance, performance, cost, and maintainability. This project became a useful example of that reality when the upgrade path to Astro 6 exposed a peer dependency conflict with Keystatic.
+
+The immediate problem looked routine: `npm install` failed with an `ERESOLVE` peer dependency error because `@keystatic/astro@5.0.6` declared support for Astro versions `2 || 3 || 4 || 5`, while the site was intentionally moving to Astro 6. The larger decision was less routine. I had to decide whether to downgrade Astro, wait for upstream metadata to catch up, bypass peer dependency checks globally, or apply a narrow override that preserved the upgrade while keeping the dependency graph explicit.
+
+## The Upgrade Problem
+
+Astro 6 was the target because this portfolio is intended to be a long-lived system, not a disposable template. The site benefits from staying close to the current framework line: fresher security posture, better compatibility with the current Astro integration ecosystem, and less future migration debt.
+
+Keystatic was still the right CMS choice. It gives the project a structured editing surface without introducing a hosted content platform, runtime API dependency, paid CMS tier, or separate content database. The conflict was not a runtime failure in the portfolio itself; it was npm protecting the project from a package whose published peer range had not yet declared Astro 6 compatibility.
+
+That distinction matters. A peer dependency conflict should not be ignored, but it also should not automatically force a downgrade when the package remains compatible in practice and the risk can be constrained.
+
+## The Decision
+
+I chose a scoped npm override:
+
+```json
+{
+  "overrides": {
+    "@keystatic/astro": {
+      "astro": "$astro"
+    }
+  }
+}
+```
+
+This tells npm to resolve the `astro` peer used by `@keystatic/astro` to the same top-level Astro version already declared by the application. It is intentionally narrow: the override applies to one integration and one peer relationship instead of weakening dependency resolution for the entire install.
+
+The alternative would have been:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+That option would have unblocked the install, but it would also have trained the project and CI pipeline to accept peer dependency drift globally. For a portfolio meant to demonstrate engineering judgment, that was the wrong trade-off. A local override documents the exception, keeps the package manager strict elsewhere, and makes the decision easy to remove when Keystatic publishes an Astro 6 peer range.
+
+## Why Not Downgrade?
+
+Downgrading Astro would have optimized for a quiet install at the cost of the system's long-term direction. That is often a reasonable choice in large enterprise applications when the integration surface is broad, the release window is constrained, or compatibility is uncertain.
+
+In this project, the blast radius was smaller and the value of staying current was higher. The portfolio is a static Astro application with Keystatic managing file-backed content. There is no critical runtime dependency on a CMS API, no server-side content negotiation layer, and no database migration risk. The right move was to validate the build, document the override, and keep moving forward.
+
+The guiding principle was simple: do not downgrade the platform because one integration's peer metadata is conservative, but do not bypass the package manager blindly either.
+
+## Why Keystatic
+
+For a personal portfolio, a traditional headless CMS can be more infrastructure than the problem requires. It adds account management, webhooks, API credentials, environment variables, billing risk, preview complexity, and another operational surface to monitor.
+
+Keystatic fits this use case because content remains in the repository:
+
+- Articles and projects are version-controlled alongside the application.
+- Pull requests can review content and code together.
+- Publishing is handled by the existing Git and deployment workflow.
+- Local development can edit content without depending on a remote CMS.
+- The production site remains static and inexpensive to operate.
+
+That architecture is especially useful for a portfolio because the content is part of the professional artifact. The writing, project metadata, schema, UI, and deployment pipeline all tell the same story: the site is engineered as a maintainable product, not assembled as a one-off page.
+
+## CI/CD Impact
+
+The override also protects continuous delivery. Without it, a clean install in GitHub Actions or Netlify can fail before the site reaches type checking, content validation, or build generation. With the override committed to `package.json` and reflected in `package-lock.json`, every environment resolves the same dependency graph.
+
+The deployment path becomes reproducible:
+
+```bash
+npm ci
+npm run build
+```
+
+This is the important difference between a local workaround and an architectural decision. The fix is encoded in source control, reviewed like any other change, and applied consistently by contributors, CI, and deployment infrastructure.
+
+## Frontend Considerations
+
+The frontend requirement was to preserve the benefits of Astro's static rendering model while allowing content to be written through a structured CMS. Articles are stored as Markdoc content, validated through Astro content collections, and rendered as static pages at build time.
+
+The article schema keeps metadata explicit:
+
+```ts
+const articles = defineCollection({
+  type: 'content',
+  schema: z.object({
+    description: z.string().max(160),
+    isDraft: z.boolean().default(true),
+    pubDate: z.date(),
+    tags: z.array(z.string()).default(['General']),
+    title: z.string(),
+    relatedProject: z.string().optional(),
+  }),
+});
+```
+
+That schema gives the frontend predictable data for SEO, listing pages, filters, and related project links. It also makes invalid content fail during development or build instead of surfacing as a broken production page.
+
+## Backend and Content Operations
+
+There is no traditional backend service in this architecture, which is the point. The operational backend is Git plus the build pipeline. Keystatic provides the editing interface, Astro validates and renders the content, and Netlify serves the static output.
+
+The result is a backend decision disguised as a content decision: remove runtime infrastructure where it does not add business value. For this portfolio, the source of truth is the repository, the review mechanism is Git, and the release mechanism is the static deployment pipeline.
+
+## Implementation Checklist
+
+1. Declare Astro 6 and the Keystatic integration in `package.json`.
+2. Add a scoped npm override for `@keystatic/astro` so it resolves the top-level Astro version.
+3. Commit the generated `package-lock.json` so CI and local installs use the same graph.
+4. Configure Keystatic to store articles in `src/content/articles/*` with `.mdoc` content.
+5. Define the Astro content collection schema with SEO, publication, tag, and draft fields.
+6. Add the article as Markdoc content with `isDraft: false`.
+7. Validate with a clean install and production build.
+
+## Result
+
+The final architecture keeps the site current on Astro 6, preserves Keystatic's editorial workflow, avoids unnecessary CMS infrastructure, and keeps CI/CD deterministic. More importantly, it documents the trade-off in a way that future maintainers can understand.
+
+This is the type of decision that appears small in a commit diff but meaningful in practice. It shows how I approach software lifecycle work: isolate the risk, make the exception explicit, validate the build, and choose the path that supports the system's next several years instead of only the next install command.
