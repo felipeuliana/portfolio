@@ -1,0 +1,33 @@
+---
+description: >-
+  A streaming catalog prototype with persisted profiles, IMDb data, search, and
+  AI-assisted delivery.
+publishDate: 2026-04-24
+title: Immerflix
+featured: true
+status: published
+githubUrl: https://github.com/felipeuliana/immerflix
+role: Senior Full Stack Developer
+stack:
+  - HTML
+  - CSS
+  - JavaScript
+  - IndexedDB
+  - IMDb API
+  - AI-assisted
+coverAlt: >-
+  Immerflix streaming prototype with director profiles, a featured hero, search,
+  and personalized media rows.
+coverImage: ../../assets/projects/immerflix/coverImage.png
+---
+{% challenge title="Challenge" %}
+Immerflix explores the product architecture behind a streaming experience: the app needs to know who is watching, persist that choice locally, and turn a large external movie catalog into a focused browsing interface. The challenge was to keep the prototype lightweight while still feeling like a real product, from the Portuguese "Quem está assistindo?" profile gateway to a catalog page with navigation, search, hero promotion, personalized rows, loading states, and graceful fallbacks when browser storage or API calls fail.
+{% /challenge %}
+
+{% solution title="Solution" %}
+I built the app with platform-native HTML, CSS, and JavaScript, separating user persistence from movie-data access through dedicated `userService` and `movieService` modules. The profile flow seeds director-based personas such as Walter Salles, Hayao Miyazaki, and Guillermo del Toro, stores the active viewer in IndexedDB with a localStorage fallback, and routes the user into a catalog view. The catalog integrates with the IMDb API to load director filmography, trending movies, TV-series rows, still-frame hero imagery, and search results, while sessionStorage caches featured hero content to reduce repeated fetches during a browsing session.
+{% /solution %}
+
+{% result title="Result" %}
+The result is a functional streaming-platform prototype with a recruiter-friendly story: clear product decomposition, resilient client-side persistence, API-driven discovery, accessible navigation hooks, and a high-fidelity catalog experience with featured content, "Em Alta", "Continuar Assistindo", and "Minha Lista" sections. It demonstrates how I use AI assistance as part of delivery while still grounding decisions in readable architecture, explicit error handling, and maintainable browser-native code.
+{% /result %}
