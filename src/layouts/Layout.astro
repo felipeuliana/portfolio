@@ -5,7 +5,7 @@ import '../styles/layout.css';
 
 const root = import.meta.env.OLDPWD ?? '';
 const reader = createReader(root, keystaticConfig);
-const site = await reader.singletons.site.read();
+const settings = await reader.singletons.settings.read();
 ---
 
 <!doctype html>
@@ -13,13 +13,13 @@ const site = await reader.singletons.site.read();
 	<head>
     <meta charset="UTF-8">
 		<meta name="generator" content={Astro.generator} />
-    <meta name="description" content={site?.description} />
+    <meta name="description" content={settings?.description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
 		<link rel="icon" href="/favicon.ico" />
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-		<title>{site?.title}</title>
+		<title>{settings?.title}</title>
 	</head>
 
 	<body>
