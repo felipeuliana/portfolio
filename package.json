@@ -6,10 +6,11 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
+    "astro": "astro",
     "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "dev": "astro dev",
+    "prepare": "panda codegen",
+    "preview": "astro preview"
   },
   "overrides": {
     "@keystatic/astro": {
@@ -27,5 +28,8 @@
     "astro": "^6.1.8",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@pandacss/dev": "^1.10.0"
   }
 }
