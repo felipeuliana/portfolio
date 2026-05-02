@@ -54,12 +54,15 @@ const HEADING_SMALL = {
   textDecoration: 'None',
   textTransform: 'None'
 };
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
   // The output directory for your css system
   globalCss: GLOBAL_STYLES,
   // Files to exclude
   exclude: [],
+  // Enable className and css variable name hashing
+  hash: IS_PRODUCTION,
   // Where to look for your css declarations
   include: ["./src/**/*.{js,jsx,ts,tsx,astro}",],  
   // The output directory for your css system
