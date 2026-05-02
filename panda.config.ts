@@ -1,8 +1,17 @@
 import { defineConfig, defineGlobalStyles } from "@pandacss/dev";
 
+const COLOR_PALETTE = {
+  SHADOW_GREY: '#1e1e24ff',
+  AMBER_EARTH: '#e28413ff',
+  GHOST_WHITE: '#fffaffff',
+  BUBBLE_GUM_PINK: '#f45b69ff',
+  ROSY_GRANITE: '#7f7b82ff',
+};
 const GLOBAL_STYLES = defineGlobalStyles({
   'html, body': {
     alignItems: 'center',
+    backgroundColor: 'dark',
+    color: 'light',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -141,6 +150,14 @@ export default defineConfig({
       },
       // Design tokens
       tokens: {
+        // Design color palette
+        colors: {
+          accent: { value: COLOR_PALETTE.AMBER_EARTH },
+          dark: { value: COLOR_PALETTE.SHADOW_GREY },
+          light: { value: COLOR_PALETTE.GHOST_WHITE },
+          neutral: { value: COLOR_PALETTE.ROSY_GRANITE },
+          primary: { value: COLOR_PALETTE.BUBBLE_GUM_PINK },
+        },
         // Design typography
         fonts: {
           primary: { value: `Fira Sans, {fonts.sans}` },
