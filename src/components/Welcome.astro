@@ -1,17 +1,22 @@
 ---
 import { createReader } from '@keystatic/core/reader';
 import keystaticConfig from '../../keystatic.config.ts';
+import { css } from '../../styled-system/css';
+import '@fontsource/fira-code/700.css';
 
 const root = import.meta.env.OLDPWD ?? '';
 const reader = createReader(root, keystaticConfig);
 const homepage = await reader.singletons.homepage.read();
+const styles = {
+  title: css({
+    color: 'primary',
+  }),
+};
 ---
 
-<div id="container">
-	<main>
-		<section id="hero">
-			<h1>{homepage?.hero.title}</h1>
-			<p>{homepage?.hero.description}</p>
-		</section>
-	</main>
-</div>
+<main id="container">
+  <section id="hero">
+    <h1 class={styles.title}>{homepage?.hero.title}</h1>
+    <p>{homepage?.hero.description}</p>
+  </section>
+</main>
